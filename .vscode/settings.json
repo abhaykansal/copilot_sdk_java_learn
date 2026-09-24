@@ -1,0 +1,7 @@
+{
+    "airun.settings": {
+        "workspaceId": "b12a93cd-26d6-430e-8d77-194aeea05d8a"
+    },
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true
+}
