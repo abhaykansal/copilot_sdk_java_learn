@@ -1,10 +1,13 @@
 import com.github.copilot.CopilotClient;
+import com.github.copilot.generated.ToolExecutionCompleteEvent;
+import com.github.copilot.generated.ToolExecutionStartEvent;
 import com.github.copilot.rpc.MessageOptions;
 import com.github.copilot.rpc.PermissionHandler;
 import com.github.copilot.rpc.SessionConfig;
 import com.github.copilot.rpc.ToolDefinition;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CopilotAgent {
 
@@ -92,19 +95,39 @@ public class CopilotAgent {
              */
 
             var session = client.createSession(
-
-                new SessionConfig()
-
-                    .setModel("auto")
-
-                    .setOnPermissionRequest(
-                        PermissionHandler.APPROVE_ALL
-                    )
-
+                new SessionConfig().setModel("auto").setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
                     .setTools(tools)
-
             ).get();
 
+           //Capture the events from the session
+      /*     session.on(event -> {
+               System.out.println("[EVENT] " + event.getType() + "[Event Message]" + event);
+           });
+*/
+
+session.on(event -> {
+
+    if (event instanceof ToolExecutionStartEvent toolStart) {
+
+        var data = toolStart.getData();
+
+        System.out.println(
+            "[TOOL START] "
+            + data.toolName()
+            + " | args=" + data.arguments()
+        );
+
+    } else if (event instanceof ToolExecutionCompleteEvent toolComplete) {
+
+        var data = toolComplete.getData();
+
+        System.out.println(
+            "[TOOL COMPLETE] "
+            + data.toolDescription()
+            + " | success=" + data.success()
+        );
+    }
+});
             /*
              * ======================================================
              * 6. Ask Copilot to get an order status
@@ -115,10 +138,10 @@ public class CopilotAgent {
 
                 new MessageOptions()
                     .setPrompt(
-                        "Please get order status of ORD-9999 ?"
+                        "Get the status of ORD-1001. If it is shipped, try to cancel it and tell me whether cancellation succeeded."
                     )
 
-            ).get();
+            ).get(180, TimeUnit.SECONDS);
 
             /*
              * ======================================================
