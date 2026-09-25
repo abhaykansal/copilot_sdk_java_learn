@@ -16,7 +16,7 @@ public class CopilotAgent {
          * ==========================================================
          */
 
-        OrderStatus orderStatus = new OrderStatus();
+    //    OrderStatus orderStatus = new OrderStatus();
         OrderService orderService = new OrderService();
 
         /*
@@ -115,7 +115,7 @@ public class CopilotAgent {
 
                 new MessageOptions()
                     .setPrompt(
-                        "What is current status of the order ORD-5000 ?"
+                        "Please get order status of ORD-9999 ?"
                     )
 
             ).get();

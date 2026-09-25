@@ -20,6 +20,21 @@ public final class OrderService$$CopilotToolMeta implements CopilotToolMetadataP
     public List<ToolDefinition> definitions(OrderService instance, ObjectMapper mapper) {
         return List.of(
             new ToolDefinition(
+                "cancel_order",
+                "Cancels an order using the order ID",
+                Map.of("type", "object", "properties", Map.ofEntries(Map.entry("orderId", (Map<String, Object>)(Map) withMeta(Map.of("type", "string"), "The unique ID of the order", null))), "required", List.of("orderId")),
+                invocation -> {
+                    Map<String, Object> args = invocation.getArguments();
+                    java.lang.String orderId = (String) args.get("orderId");
+                    return instance.cancelOrder(orderId).thenApply(r -> (Object) r);
+                },
+                null,
+                null,
+                null,
+                null,
+                null
+            ),
+            new ToolDefinition(
                 "get_order_status",
                 "Gets the current status of an order using the order ID",
                 Map.of("type", "object", "properties", Map.ofEntries(Map.entry("orderId", (Map<String, Object>)(Map) withMeta(Map.of("type", "string"), "The unique ID of the order", null))), "required", List.of("orderId")),
@@ -42,21 +57,6 @@ public final class OrderService$$CopilotToolMeta implements CopilotToolMetadataP
                     Map<String, Object> args = invocation.getArguments();
                     java.lang.String orderId = (String) args.get("orderId");
                     return instance.getOrderDetails(orderId).thenApply(r -> (Object) r);
-                },
-                null,
-                null,
-                null,
-                null,
-                null
-            ),
-            new ToolDefinition(
-                "cancel_order",
-                "Cancels an order using the order ID",
-                Map.of("type", "object", "properties", Map.ofEntries(Map.entry("orderId", (Map<String, Object>)(Map) withMeta(Map.of("type", "string"), "The unique ID of the order", null))), "required", List.of("orderId")),
-                invocation -> {
-                    Map<String, Object> args = invocation.getArguments();
-                    java.lang.String orderId = (String) args.get("orderId");
-                    return instance.cancelOrder(orderId).thenApply(r -> (Object) r);
                 },
                 null,
                 null,

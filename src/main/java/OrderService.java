@@ -21,14 +21,40 @@ public class OrderService {
         System.out.println("[TOOL] get_order_status called: " + orderId);
 
         
-        if ("ORD-5000".equals(orderId)) {
-            System.out.println("[TOOL] Simulating service failure...");
+      if ("ORD-5000".equals(orderId)) {
+        System.out.println("[TOOL] Simulating service failure...");
 
-            throw new RuntimeException(
-                "Order service is temporarily unavailable"
+            return CompletableFuture.failedFuture(
+                new RuntimeException(
+                    "Order service is temporarily unavailable"
+                )
             );
         }
 
+
+        if ("ORD-5001".equals(orderId)) {
+            System.out.println("[TOOL] Simulating service failure...");
+
+            ToolResult result = ToolResult.failureResult(
+                "SERVICE_UNAVAILABLE",
+                "Order service is temporarily unavailable",
+                true
+        );
+
+        return CompletableFuture.completedFuture(result.toString());
+    }
+
+        if ("ORD-9999".equals(orderId)) {
+             System.out.println("[TOOL] Simulating order not found...");
+ 
+            ToolResult result = ToolResult.failureResult(
+                "ORDER_NOT_FOUND",
+                "Order ORD-9999 does not exist",
+                false
+        );
+
+        return CompletableFuture.completedFuture(result.toString());
+}
         String status;
 
         switch (orderId) {
@@ -45,10 +71,12 @@ public class OrderService {
                 break;
 
             default:
-                status = "ORDER_NOT_FOUND in OrderStatus";
+               ToolResult result = ToolResult.failureResult("ORDER_NOT_FOUND in order status","Order " + orderId + " does not exist",false);
+               return CompletableFuture.completedFuture(result.toString());
         }
 
-        return CompletableFuture.completedFuture(status);
+        ToolResult result = ToolResult.successResult(status);
+        return CompletableFuture.completedFuture(result.toString());
     }
 
 
@@ -90,11 +118,14 @@ public class OrderService {
                         """;
                 break;
 
-            default:
-                details = "ORDER_NOT_FOUND in OrderDetails";
+            default:  
+                 ToolResult result = ToolResult.failureResult("ORDER_NOT_FOUND in OrderDetails", "Order " + orderId + " does not exist",false);
+                 return CompletableFuture.completedFuture(result.toString());
+               
         }
 
-        return CompletableFuture.completedFuture(details);
+        ToolResult result = ToolResult.successResult(details);
+        return CompletableFuture.completedFuture(result.toString());
     }
 
 
@@ -114,19 +145,26 @@ public class OrderService {
         System.out.println("[TOOL] cancel_order called: " + orderId);
 
         if ("ORD-1001".equals(orderId)) {
-            return CompletableFuture.completedFuture(
-                "Order ORD-1001 cannot be cancelled because it has already shipped."
+            ToolResult result = ToolResult.failureResult(
+                "CANNOT_CANCEL",
+                "Order ORD-1001 cannot be cancelled because it has already shipped.",
+                false
             );
+            return CompletableFuture.completedFuture(result.toString());
         }
 
         if ("ORD-1002".equals(orderId)) {
-            return CompletableFuture.completedFuture(
+            ToolResult result = ToolResult.successResult(
                 "Order ORD-1002 has been successfully cancelled."
             );
+            return CompletableFuture.completedFuture(result.toString());
         }
 
-        return CompletableFuture.completedFuture(
-            "ORDER_NOT_FOUND in CancelOrder"
+        ToolResult result = ToolResult.failureResult(
+            "ORDER_NOT_FOUND",
+            "Order not found in CancelOrder",
+            false
         );
+        return CompletableFuture.completedFuture(result.toString());
     }
 }
